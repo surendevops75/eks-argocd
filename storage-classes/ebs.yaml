@@ -1,0 +1,44 @@
+# StorageClass Manifest
+
+# --------------------------------------------------------
+# STORAGE CLASS API VERSION
+# --------------------------------------------------------
+
+apiVersion: storage.k8s.io/v1
+
+# --------------------------------------------------------
+# RESOURCE TYPE
+# --------------------------------------------------------
+
+# Kubernetes StorageClass resource
+kind: StorageClass
+
+metadata:
+
+  # StorageClass name
+  name: roboshop-ebs
+
+# --------------------------------------------------------
+# RECLAIM POLICY
+# --------------------------------------------------------
+
+# Controls what happens to storage
+# after PVC is deleted
+reclaimPolicy: Retain
+
+# --------------------------------------------------------
+# STORAGE PROVISIONER
+# --------------------------------------------------------
+
+# AWS EBS CSI Driver
+# Dynamically provisions EBS volumes
+provisioner: ebs.csi.aws.com
+
+# --------------------------------------------------------
+# VOLUME BINDING MODE
+# --------------------------------------------------------
+
+# Volume creation waits until pod scheduling
+volumeBindingMode: WaitForFirstConsumer
+
+---
