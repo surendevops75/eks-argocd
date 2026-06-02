@@ -1,9 +1,6 @@
 # Argo CD App of Apps Manifest
 
-```yaml
-# --------------------------------------------------------
 # API VERSION
-# --------------------------------------------------------
 
 # Argo CD API group and version
 apiVersion: argoproj.io/v1alpha1
