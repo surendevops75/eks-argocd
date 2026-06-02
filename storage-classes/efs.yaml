@@ -1,6 +1,5 @@
 # StorageClass Manifest
 
-```yaml
 # --------------------------------------------------------
 # RESOURCE TYPE
 # --------------------------------------------------------
@@ -43,6 +42,3 @@ parameters:
   # Base path inside EFS
   # Optional parameter
   basePath: "/roboshop"
-```
-
----
