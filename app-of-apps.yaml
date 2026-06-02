@@ -1,0 +1,82 @@
+# Argo CD App of Apps Manifest
+
+```yaml
+# --------------------------------------------------------
+# API VERSION
+# --------------------------------------------------------
+
+# Argo CD API group and version
+apiVersion: argoproj.io/v1alpha1
+
+# --------------------------------------------------------
+# RESOURCE TYPE
+# --------------------------------------------------------
+
+# Argo CD Application resource
+kind: Application
+
+metadata:
+
+  # Parent application name
+  name: platform-root
+
+  # Namespace where Argo CD is installed
+  namespace: argocd
+
+  # --------------------------------------------------------
+  # FINALIZERS
+  # --------------------------------------------------------
+
+  # Ensures child resources are deleted properly
+  # before deleting parent application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+
+  # --------------------------------------------------------
+  # ARGO CD PROJECT
+  # --------------------------------------------------------
+
+  project: default
+
+  # --------------------------------------------------------
+  # SOURCE CONFIGURATION
+  # --------------------------------------------------------
+
+  source:
+
+    # Git repository containing child applications
+    repoURL: https://github.com/daws-86s/eks-argocd.git
+
+    # Git branch/tag/commit
+    targetRevision: main
+
+    # Path containing child Application manifests
+    path: applications
+
+  # --------------------------------------------------------
+  # DESTINATION CONFIGURATION
+  # --------------------------------------------------------
+
+  destination:
+
+    # Current Kubernetes cluster
+    server: https://kubernetes.default.svc
+
+    # Namespace where child applications are created
+    namespace: argocd
+
+  # --------------------------------------------------------
+  # SYNCHRONIZATION POLICY
+  # --------------------------------------------------------
+
+  syncPolicy:
+
+    automated:
+
+      # Automatically remove deleted resources
+      prune: true
+
+      # Automatically restore drifted resources
+      selfHeal: true
