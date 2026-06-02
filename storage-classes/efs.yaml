@@ -1,0 +1,48 @@
+# StorageClass Manifest
+
+```yaml
+# --------------------------------------------------------
+# RESOURCE TYPE
+# --------------------------------------------------------
+
+kind: StorageClass
+
+# --------------------------------------------------------
+# API VERSION
+# --------------------------------------------------------
+
+apiVersion: storage.k8s.io/v1
+
+metadata:
+
+  # StorageClass name
+  name: roboshop-efs
+
+# --------------------------------------------------------
+# STORAGE PROVISIONER
+# --------------------------------------------------------
+
+# AWS EFS CSI Driver
+provisioner: efs.csi.aws.com
+
+# --------------------------------------------------------
+# DRIVER PARAMETERS
+# --------------------------------------------------------
+
+parameters:
+
+  # Dynamic Access Point provisioning mode
+  provisioningMode: efs-ap
+
+  # Existing AWS EFS FileSystem ID
+  fileSystemId: fs-02ba4dd076173e1a8
+
+  # Directory permissions
+  directoryPerms: "700"
+
+  # Base path inside EFS
+  # Optional parameter
+  basePath: "/roboshop"
+```
+
+---
