@@ -1,0 +1,189 @@
+# Kubernetes Manifest
+
+```yaml
+# --------------------------------------------------------
+# CONFIGMAP
+# --------------------------------------------------------
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+
+  # ConfigMap name
+  name: cart
+
+  # Kubernetes namespace
+  namespace: roboshop
+
+# Application configuration
+data:
+
+  # Redis hostname
+  REDIS_HOST: "redis"
+
+  # Catalogue service hostname
+  CATALOGUE_HOST: "catalogue"
+
+  # Catalogue service port
+  CATALOGUE_PORT: "8080"
+
+---
+
+# --------------------------------------------------------
+# DEPLOYMENT
+# --------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+
+  # Deployment name
+  name: cart
+
+  namespace: roboshop
+
+  # Labels for Deployment/ReplicaSet
+  labels:
+    project: roboshop
+    component: cart
+    tier: backend
+
+spec:
+
+  # Number of pod replicas
+  replicas: 1
+
+  # --------------------------------------------------------
+  # LABEL SELECTOR
+  # --------------------------------------------------------
+
+  selector:
+
+    # Select matching pods
+    matchLabels:
+      project: roboshop
+      component: cart
+      tier: backend
+
+  # --------------------------------------------------------
+  # POD TEMPLATE
+  # --------------------------------------------------------
+
+  template:
+
+    metadata:
+
+      # Pod labels
+      labels:
+        project: roboshop
+        component: cart
+        tier: backend
+
+    spec:
+
+      containers:
+
+      # Container definition
+      - name: cart
+
+        # Docker image
+        image: joindevops/cart:v1
+
+        # Always pull latest image
+        imagePullPolicy: Always
+
+        # --------------------------------------------------------
+        # LOAD CONFIGMAP VARIABLES
+        # --------------------------------------------------------
+
+        envFrom:
+        - configMapRef:
+            name: cart
+
+        # --------------------------------------------------------
+        # CONTAINER PORT
+        # --------------------------------------------------------
+
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+
+        # --------------------------------------------------------
+        # READINESS PROBE
+        # --------------------------------------------------------
+
+        readinessProbe:
+
+          httpGet:
+
+            # Health endpoint
+            path: /health
+
+            # Port name
+            port: liveness-port
+
+          # Failed attempts before marking unready
+          failureThreshold: 1
+
+          # Probe interval
+          periodSeconds: 15
+
+        # --------------------------------------------------------
+        # LIVENESS PROBE
+        # --------------------------------------------------------
+
+        livenessProbe:
+
+          httpGet:
+
+            path: /health
+            port: liveness-port
+
+          failureThreshold: 1
+          periodSeconds: 15
+
+---
+
+# --------------------------------------------------------
+# SERVICE
+# --------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+
+metadata:
+
+  # Service name
+  name: cart
+
+  namespace: roboshop
+
+spec:
+
+  # --------------------------------------------------------
+  # POD SELECTOR
+  # --------------------------------------------------------
+
+  selector:
+    project: roboshop
+    component: cart
+    tier: backend
+
+  # --------------------------------------------------------
+  # SERVICE PORTS
+  # --------------------------------------------------------
+
+  ports:
+
+    - protocol: TCP
+
+      # Service port
+      port: 8080
+
+      # Container port
+      targetPort: 8080
+```
+
+---
