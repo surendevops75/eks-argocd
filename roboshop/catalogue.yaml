@@ -1,0 +1,182 @@
+# Kubernetes Manifest
+
+```yaml
+# --------------------------------------------------------
+# CONFIGMAP
+# --------------------------------------------------------
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: catalogue
+  namespace: roboshop
+
+# Key-value configuration data
+data:
+
+  # Enable MongoDB integration
+  MONGO: "true"
+
+  # MongoDB connection URL
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"
+
+---
+
+# --------------------------------------------------------
+# DEPLOYMENT
+# --------------------------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+
+  # Deployment name
+  name: catalogue
+
+  namespace: roboshop
+
+  # Labels for Deployment and ReplicaSet
+  labels:
+    project: roboshop
+    component: catalogue
+    tier: backend
+
+spec:
+
+  # Number of pod replicas
+  replicas: 1
+
+  # --------------------------------------------------------
+  # LABEL SELECTOR
+  # --------------------------------------------------------
+
+  selector:
+
+    # Select matching pods
+    matchLabels:
+      project: roboshop
+      component: catalogue
+      tier: backend
+
+  # --------------------------------------------------------
+  # POD TEMPLATE
+  # --------------------------------------------------------
+
+  template:
+
+    metadata:
+
+      # Pod labels
+      labels:
+        project: roboshop
+        component: catalogue
+        tier: backend
+
+    spec:
+
+      containers:
+
+      # Container definition
+      - name: catalogue
+
+        # Docker image
+        image: joindevops/catalogue:v1
+
+        # Always pull latest image version
+        imagePullPolicy: Always
+
+        # --------------------------------------------------------
+        # LOAD ENV VARIABLES FROM CONFIGMAP
+        # --------------------------------------------------------
+
+        envFrom:
+        - configMapRef:
+            name: catalogue
+
+        # --------------------------------------------------------
+        # CONTAINER PORT
+        # --------------------------------------------------------
+
+        ports:
+        - name: liveness-port
+          containerPort: 8080
+
+        # --------------------------------------------------------
+        # READINESS PROBE
+        # --------------------------------------------------------
+
+        readinessProbe:
+
+          httpGet:
+
+            # Health endpoint
+            path: /health
+
+            # Port to check
+            port: liveness-port
+
+          # Failure threshold
+          failureThreshold: 1
+
+          # Probe interval
+          periodSeconds: 15
+
+        # --------------------------------------------------------
+        # LIVENESS PROBE
+        # --------------------------------------------------------
+
+        livenessProbe:
+
+          httpGet:
+
+            path: /health
+            port: liveness-port
+
+          failureThreshold: 1
+          periodSeconds: 15
+
+---
+
+# --------------------------------------------------------
+# SERVICE
+# --------------------------------------------------------
+
+apiVersion: v1
+kind: Service
+
+metadata:
+
+  # Service name
+  name: catalogue
+
+  namespace: roboshop
+
+spec:
+
+  # --------------------------------------------------------
+  # POD SELECTOR
+  # --------------------------------------------------------
+
+  selector:
+    project: roboshop
+    component: catalogue
+    tier: backend
+
+  # --------------------------------------------------------
+  # SERVICE PORTS
+  # --------------------------------------------------------
+
+  ports:
+
+    - protocol: TCP
+
+      # Service port
+      port: 8080
+
+      # Container port
+      targetPort: 8080
+```
+
+---
