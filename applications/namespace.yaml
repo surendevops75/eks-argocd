@@ -1,6 +1,5 @@
 # Argo CD Application Manifest
 
-```yaml
 # --------------------------------------------------------
 # API VERSION
 # --------------------------------------------------------
@@ -72,6 +71,3 @@ spec:
 
       # Restore drifted resources automatically
       selfHeal: true
-```
-
----
