@@ -1,0 +1,33 @@
+# Namespace Manifest
+
+```yaml
+# --------------------------------------------------------
+# API VERSION
+# --------------------------------------------------------
+
+# Core Kubernetes API version
+apiVersion: v1
+
+# --------------------------------------------------------
+# RESOURCE TYPE
+# --------------------------------------------------------
+
+# Kubernetes Namespace resource
+kind: Namespace
+
+metadata:
+
+  # Namespace name
+  name: expense
+
+  # Labels attached to namespace
+  labels:
+
+    # Environment label
+    environment: development
+
+    # Project label
+    project: expense
+```
+
+---
