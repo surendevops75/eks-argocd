@@ -1,6 +1,5 @@
 # Namespace Manifest
 
-```yaml
 # Core Kubernetes API version
 apiVersion: v1
 
@@ -20,6 +19,3 @@ metadata:
 
     # Project label
     project: roboshop
-```
-
----
