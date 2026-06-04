@@ -1,0 +1,25 @@
+# Namespace Manifest
+
+```yaml
+# Core Kubernetes API version
+apiVersion: v1
+
+# Kubernetes Namespace resource
+kind: Namespace
+
+metadata:
+
+  # Namespace name
+  name: roboshop
+
+  # Labels attached to namespace
+  labels:
+
+    # Environment label
+    environment: development
+
+    # Project label
+    project: roboshop
+```
+
+---
