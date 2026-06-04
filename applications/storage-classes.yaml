@@ -1,0 +1,73 @@
+# Argo CD Application Manifest
+
+```yaml
+# --------------------------------------------------------
+# API VERSION
+# --------------------------------------------------------
+
+# Argo CD API version
+apiVersion: argoproj.io/v1alpha1
+
+# --------------------------------------------------------
+# RESOURCE TYPE
+# --------------------------------------------------------
+
+# Argo CD Application resource
+kind: Application
+
+metadata:
+
+  # Application name shown in Argo CD UI
+  name: storage-classes
+
+  # Namespace where Argo CD is installed
+  namespace: argocd
+
+spec:
+
+  # --------------------------------------------------------
+  # ARGO CD PROJECT
+  # --------------------------------------------------------
+
+  project: default
+
+  # --------------------------------------------------------
+  # SOURCE CONFIGURATION
+  # --------------------------------------------------------
+
+  source:
+
+    # Git repository containing StorageClass manifests
+    repoURL: https://github.com/daws-86s/eks-argocd.git
+
+    # Branch/tag/commit to synchronize
+    targetRevision: main
+
+    # Folder containing StorageClass YAML files
+    path: storage-classes
+
+  # --------------------------------------------------------
+  # DESTINATION CONFIGURATION
+  # --------------------------------------------------------
+
+  destination:
+
+    # Current Kubernetes cluster
+    server: https://kubernetes.default.svc
+
+    # Namespace where Argo CD application exists
+    namespace: argocd
+
+  # --------------------------------------------------------
+  # SYNCHRONIZATION POLICY
+  # --------------------------------------------------------
+
+  syncPolicy:
+
+    automated:
+
+      # Delete resources removed from Git
+      prune: true
+
+      # Restore manually modified resources
+      selfHeal: true
